@@ -7,7 +7,7 @@
 
 TOOLCHAIN=/usr/arm-4.4.3-toolchain/bin/arm-eabi-
 ARCH=arm
-MKBOOTIMG=./mkbootimg
+MKBOOTIMG=mkbootimg
 RAMDISK=usr/ramdisk.cpio.lzma
 BOOTIMAGE=normalboot.img
 
