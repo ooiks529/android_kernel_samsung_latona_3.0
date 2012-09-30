@@ -5,13 +5,18 @@
 # By Mark "Hill Beast" Kennard
 #
 
-TOOLCHAIN=/usr/arm-4.4.3-toolchain/bin/arm-eabi-
+TOOLCHAIN=/usr/arm-toolchain/bin/arm-none-eabi-
 ARCH=arm
 MKBOOTIMG=./mkbootimg
 RAMDISK=usr/ramdisk.cpio.lzma
 BOOTIMAGE=normalboot.img
 
-CPUCORES=`grep "cpu cores" /proc/cpuinfo | awk '{ print $4 }' | head -c 1`
+CPUS=`cat /proc/cpuinfo | grep processor | awk '{ print $3 }' | tail -c 3`
+CPUS=`expr $CPUS + 1`
+CPUCORES=`grep "cpu cores" /proc/cpuinfo | awk '{ print $4 }' | tail -c 2`
+THREADS=`echo "$CPUS * $CPUCORES" | bc`
+
+echo "$CPUS processors with $CPUCORES cores/threads = $THREADS threads total"
 
 USEOUTDIR=`echo $1 $2 $3 $4 | grep -useout`
 
@@ -62,23 +67,27 @@ if test -f $USEOUTDIR"arch/$ARCH/boot/zImage"; then
 fi
 
 if [ -z "$USEOUTDIR" ]; then
-	echo "make -j$CPUCORES CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH"
-	make -j$CPUCORES CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH
+	echo "make -j$THREADS CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH"
+	make -j$THREADS CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH
 else
-	echo "make -j$CPUCORES CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH O=$USEOUTDIR"
-	make -j$CPUCORES CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH O=$USEOUTDIR
+	echo "make -j$THREADS CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH O=$USEOUTDIR"
+	make -j$THREADS CROSS_COMPILE=$TOOLCHAIN ARCH=$ARCH O=$USEOUTDIR
 fi
 
 echo $USEOUTDIR
 if test -f $USEOUTDIR"arch/arm/boot/zImage"; then
 	TARBALL=$KBUILD_BUILD_VERSION-boot.tar
 
-	cd usr
-	./gen_ramdisk.sh > /dev/null 2> /dev/null
+	cd usr/ramdisk
+	echo "  CPIO    usr/ramdisk.cpio"
+	find . -print0 | cpio --null -ov --format=newc > ../ramdisk.cpio 2> /dev/null
+	cd ..
+	echo "  LZMA    usr/ramdisk.cpio.lzma"
+	lzma -z -c ramdisk.cpio > ramdisk.cpio.lzma
 	cd ..
 
 	echo "  BOOTIMG $BOOTIMAGE using ramdisk ($RAMDISK)"
-	$MKBOOTIMG --kernel $USEOUTDIR"arch/arm/boot/zImage" --ramdisk $RAMDISK --pagesize 1000 -o $BOOTIMAGE
+	$MKBOOTIMG --kernel $USEOUTDIR"arch/arm/boot/zImage" --ramdisk $RAMDISK --pagesize 4096 -o $BOOTIMAGE
 	echo "  TAR     $TARBALL"
 	tar cf $TARBALL $BOOTIMAGE
 else
