@@ -34,9 +34,7 @@
 #include "sdram-hynix-h8mbx00u0mer-0em.h"
 
 #include "pm.h"
-/* LGE_CHANGE_S, [younggil.lee@lge.com], 2011-05-04, <add Setting enable Wifi Host wakeup> */
 #include "board-hub-wifi.h"
-/* LGE_CHANGE_E, [younggil.lee@lge.com], 2011-05-04, <add Setting enable Wifi Host wakeup> */
 #include "omap_ion.h"
 #include "omap_ram_console.h"
 
@@ -78,9 +76,7 @@ static void __init omap_hub_init(void)
 {
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBP);
 	omap3_pm_init_cpuidle(hub_cpuidle_params);
-	/* LGE_CHANGE_S, [younggil.lee@lge.com], 2011-05-04, <add Setting enable Wifi Host wakeup> */
 	config_wlan_mux();
-	/* LGE_CHANGE_E, [younggil.lee@lge.com], 2011-05-04, <add Setting enable Wifi Host wakeup> */
 	hub_peripherals_init();
 
 	// ion settings
@@ -89,7 +85,6 @@ static void __init omap_hub_init(void)
 
 static void __init hub_reserve(void)
 {
-	/* LGE_CHANGE_E, [jinsu.park@lge.com], 2012-06-08, <add Setting enable ram console> */
 	/* Remove the ram console region from kernel's map */
 	memblock_remove(OMAP_RAM_CONSOLE_START_DEFAULT, OMAP_RAM_CONSOLE_SIZE_DEFAULT);
 
