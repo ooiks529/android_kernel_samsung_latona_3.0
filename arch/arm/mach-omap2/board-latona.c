@@ -102,7 +102,7 @@ static void __init hub_reserve(void)
 	omap_reserve();
 }
 
-MACHINE_START(LATONA, "Samsung Latona Board")
+MACHINE_START(LGE_HUB, "Samsung Latona Board")
 	.boot_params	= 0x80000100,
 	.reserve	= hub_reserve,
 	.map_io		= omap3_map_io,

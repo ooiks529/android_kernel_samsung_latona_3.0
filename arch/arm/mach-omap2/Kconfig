@@ -324,6 +324,10 @@ config MACH_LGE_HUB
 	        	bool "Revision A "
 	endchoice
 
+config MACH_LATONA
+	bool "Samsung Latona Board via LGE Hub"
+	depends on MACH_LGE_HUB
+
 config LGE_IDLE_MAX_FREQ
 	bool "Lower max freq during idle"
 	depends on MACH_LGE_OMAP3

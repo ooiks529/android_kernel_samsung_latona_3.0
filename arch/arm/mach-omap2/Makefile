@@ -268,7 +268,7 @@ obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
 					   board-justin-camera.o
 #					   board-justin-ers.o
 else
-obj-$(CONFIG_MACH_LGE_HUB)		+= board-hub.o \
+obj-$(CONFIG_MACH_LGE_HUB)		+= board-latona.o \
 					   board-hub-peripherals.o \
 					   board-hub-mmc.o \
 					   board-hub-debug.o \
