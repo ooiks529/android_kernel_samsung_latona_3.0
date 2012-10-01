@@ -53,7 +53,7 @@ else
 		if test -f arch/$ARCH/configs/$2; then
 			cp arch/$ARCH/configs/$2 arch/$ARCH/configs/$2.bak
 		fi
-		grep "=" .config > arch/$ARCH/configs/$2
+		grep -v " is not set" .config > arch/$ARCH/configs/$2
 		echo ".config saved to arch/$ARCH/configs/$2"
 		exit
 	fi
