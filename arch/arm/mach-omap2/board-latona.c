@@ -31,7 +31,7 @@
 #include <mach/board-hub.h>
 
 #include "mux.h"
-#include "sdram-hynix-h8mbx00u0mer-0em.h"
+#include "sdram-qimonda-hyb18m512160af-6.h"
 
 #include "pm.h"
 #include "board-hub-wifi.h"
@@ -41,8 +41,7 @@
 static void __init omap_hub_init_early(void)
 {
 	omap2_init_common_infrastructure();
-	omap2_init_common_devices(h8mbx00u0mer0em_sdrc_params,
-					  h8mbx00u0mer0em_sdrc_params);
+	omap2_init_common_devices(hyb18m512160af6_sdrc_params, NULL);
 }
 
 #ifdef CONFIG_OMAP_MUX
