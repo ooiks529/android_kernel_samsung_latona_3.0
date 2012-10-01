@@ -269,15 +269,11 @@ obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
 #					   board-justin-ers.o
 else
 obj-$(CONFIG_MACH_LGE_HUB)		+= board-latona.o \
-					   board-hub-peripherals.o \
-					   board-hub-mmc.o \
-					   board-hub-debug.o \
-					   board-hub-panel.o \
-					   board-hub-wifi.o \
-					   omapxx_apps_brd_id.o \
-					   board-hub-camera.o \
-					   lge_cmdline.o
-#					   board-hub-ers.o \
+					   board-zoom-peripherals.o \
+					   board-zoom-display.o \
+					   board-flash.o \
+					   hsmmc.o \
+					   omapxx_apps_brd_id.o
 
 endif
 # LGE_CHANGE_S, bae.cheolhwan@lge.com, 2011-03-26, Modify for AT%FBOOT & AT%SWVCHECK.

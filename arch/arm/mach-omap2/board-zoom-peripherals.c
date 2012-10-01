@@ -557,7 +557,7 @@ void __init zoom_peripherals_init(void)
 	usb_musb_init(NULL);
 	enable_board_wakeup_source();
 	omap_serial_init();
-	zoom2_cam_init();
+	//zoom2_cam_init();
 	#ifdef CONFIG_PANEL_SIL9022
 	config_hdmi_gpio();
 	zoom_hdmi_reset_enable(1);

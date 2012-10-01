@@ -70,7 +70,7 @@ static void omap_prcm_arch_reset(char mode, const char *cmd)
 		u32 l;
 		prcm_offs = OMAP3430_GR_MOD;
 /* LGE_CHANGE_S from GB, more reset info. to bootloader */
-#if defined(CONFIG_MACH_LGE_OMAP3)
+#if 0
 		{
 			extern char reset_mode;
 			// yoolje.cho@lge.com : applying from 2.6.32 to 2.6.35
