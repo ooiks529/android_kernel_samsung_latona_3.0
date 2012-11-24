@@ -168,6 +168,9 @@ then
 	tar -cvf $TARBALL $KERNEL
 	cp $TARBALL $OUT/$TARBALL
 	cp $KERNEL $OUT/$KERNEL
+	rm $TARBALL
+	rm $KERNEL
+	rm usr/ramdisk.cpio
 $normal
 else
 $red
