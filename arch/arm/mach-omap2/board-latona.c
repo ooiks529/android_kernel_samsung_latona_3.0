@@ -521,13 +521,12 @@ static int __init latona_opp_init(void)
 }
 device_initcall(latona_opp_init);
 
-MACHINE_START(LATONA, "Latona Samsung Board")
-    .phys_io = 0x48000000,
-    .io_pg_offst = ((0xfa000000) >> 18) & 0xfffc,
-    .boot_params = 0x80000100,
-    .fixup = omap_board_fixup,
-    .map_io = omap_board_map_io,
-    .init_irq = omap_board_init_irq,
-    .init_machine = omap_board_init,
-    .timer = &omap_timer,
+MACHINE_START(LGE_HUB, "Samsung Latona board")
+.boot_params  = 0x80000100,
+.reserve      = omap_reserve,
+.map_io       = omap3_map_io,
+.init_early   = omap_sdp_init_early,
+.init_irq     = omap_init_irq,
+.init_machine = omap_sdp_init,
+.timer        = &omap_timer,
 MACHINE_END
