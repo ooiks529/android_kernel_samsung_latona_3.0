@@ -269,8 +269,8 @@ obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
 #					   board-justin-ers.o
 else
 obj-$(CONFIG_MACH_LGE_HUB)		+= board-latona.o \
-					   board-zoom-peripherals.o \
-					   board-zoom-display.o \
+					   board-latona-peripherals.o \
+					   board-latona-display.o \
 					   board-flash.o \
 					   hsmmc.o \
 					   omapxx_apps_brd_id.o
