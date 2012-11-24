@@ -9,6 +9,7 @@
 #
 # Normal rules
 #
+push
 .*
 *.o
 *.o.*
@@ -78,4 +79,5 @@ GTAGS
 
 *.orig
 *~
+.gitignore
 \#*#
