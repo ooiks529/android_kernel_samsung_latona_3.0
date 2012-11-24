@@ -58,24 +58,24 @@ struct device *sio_switch_dev;
 EXPORT_SYMBOL(sio_switch_dev);
 
 #ifdef CONFIG_PM
-static struct omap_volt_vc_data vc_config = {
-	/* MPU */
-	.vdd0_on = 1200000,	/* 1.2v */
-	.vdd0_onlp = 1000000,	/* 1.0v */
-	.vdd0_ret = 975000,	/* 0.975v */
-	.vdd0_off = 600000,	/* 0.6v */
-	/* CORE */
-	.vdd1_on = 1150000,	/* 1.15v */
-	.vdd1_onlp = 1000000,	/* 1.0v */
-	.vdd1_ret = 975000,	/* 0.975v */
-	.vdd1_off = 600000,	/* 0.6v */
+/* static struct omap_volt_vc_data vc_config = {
+	//MPU
+	.vdd0_on = 1200000,	// 1.2v 
+	.vdd0_onlp = 1000000,	// 1.0v
+	.vdd0_ret = 975000,	// 0.975v 
+	.vdd0_off = 600000,	// 0.6v 
+	//CORE
+	.vdd1_on = 1150000,	// 1.15v 
+	.vdd1_onlp = 1000000,	// 1.0v 
+	.vdd1_ret = 975000,	// 0.975v
+	.vdd1_off = 600000,	// 0.6v 
 
 	.clksetup = 0xff,
 	.voltoffset = 0xff,
 	.voltsetup2 = 0xff,
 	.voltsetup_time1 = 0xfff,
 	.voltsetup_time2 = 0xfff,
-}; 
+}; */ 
 
 #ifdef CONFIG_TWL4030_CORE
 static struct omap_volt_pmic_info omap_pmic_mpu = {	/* and iva */
@@ -423,7 +423,7 @@ static void __init omap_board_init(void)
 	omap_voltage_register_pmic(&omap_pmic_core, "core");
 	omap_voltage_register_pmic(&omap_pmic_mpu, "mpu");
 #endif
-	omap_voltage_init_vc(&vc_config);
+	//FIXME: omap_voltage_init_vc(&vc_config);
 #endif
 
 	sec_common_init_post();
