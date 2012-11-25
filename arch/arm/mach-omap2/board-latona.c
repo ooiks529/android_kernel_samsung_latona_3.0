@@ -78,12 +78,12 @@ EXPORT_SYMBOL(sio_switch_dev);
 }; */ 
 
 #ifdef CONFIG_TWL4030_CORE
-static struct omap_volt_pmic_info omap_pmic_mpu = {	/* and iva */
+/* static struct omap_volt_pmic_info omap_pmic_mpu = {	// and iva 
 	.name = "twl",
 	.slew_rate = 4000,
 	.step_size = 12500,
 	.i2c_addr = 0x12,
-	.i2c_vreg = 0x0,	/* (vdd0) VDD1 -> VDD1_CORE -> VDD_MPU */
+	.i2c_vreg = 0x0,	// (vdd0) VDD1 -> VDD1_CORE -> VDD_MPU 
 	.vsel_to_uv = omap_twl_vsel_to_uv,
 	.uv_to_vsel = omap_twl_uv_to_vsel,
 	.onforce_cmd = omap_twl_onforce_cmd,
@@ -98,14 +98,15 @@ static struct omap_volt_pmic_info omap_pmic_mpu = {	/* and iva */
 	.vp_vlimitto_vddmax = 0x42,
 //	.vp_vlimitto_vddmin = 0x14,
 //	.vp_vlimitto_vddmax = 0x44,
-};
+}; */ 
 
+/*
 static struct omap_volt_pmic_info omap_pmic_core = {
 	.name = "twl",
 	.slew_rate = 4000,
 	.step_size = 12500,
 	.i2c_addr = 0x12,
-	.i2c_vreg = 0x1,	/* (vdd1) VDD2 -> VDD2_CORE -> VDD_CORE */
+	.i2c_vreg = 0x1,	// (vdd1) VDD2 -> VDD2_CORE -> VDD_CORE 
 	.vsel_to_uv = omap_twl_vsel_to_uv,
 	.uv_to_vsel = omap_twl_uv_to_vsel,
 	.onforce_cmd = omap_twl_onforce_cmd,
@@ -118,7 +119,7 @@ static struct omap_volt_pmic_info omap_pmic_core = {
 	.vp_vlimitto_timeout_us = 0x200,
 	.vp_vlimitto_vddmin = 0x18,
 	.vp_vlimitto_vddmax = 0x42,
-};
+}; */
 #endif /* CONFIG_TWL4030_CORE */
 #endif /* CONFIG_PM */
 
@@ -137,13 +138,14 @@ static void __init __sec_omap_reserve_sdram(void)
 #endif
 }
 
-static void __init omap_board_map_io(void)
+// TODO: Is this needed?
+/* static void __init omap_board_map_io(void)
 {
 	omap2_set_globals_36xx();
 	omap34xx_map_common_io();
 
 	__sec_omap_reserve_sdram();
-}
+} */ 
 
 static struct omap_board_config_kernel omap_board_sec_config[] __initdata = {
 };
@@ -420,8 +422,8 @@ static void __init omap_board_init(void)
 
 #ifdef CONFIG_PM
 #ifdef CONFIG_TWL4030_CORE
-	omap_voltage_register_pmic(&omap_pmic_core, "core");
-	omap_voltage_register_pmic(&omap_pmic_mpu, "mpu");
+	//FIXME: omap_voltage_register_pmic(&omap_pmic_core, "core");
+	//FIXME: omap_voltage_register_pmic(&omap_pmic_mpu, "mpu");
 #endif
 	//FIXME: omap_voltage_init_vc(&vc_config);
 #endif
