@@ -331,8 +331,8 @@ obj-$(CONFIG_MACH_LATONA)               += board-latona.o \
 					   board-latona-peripherals.o \
 					   board-latona-display.o \
 					   hsmmc.o \
-					   omapxx_apps_brid_id.o \
-					   board-flash.c 
+					   omapxx_apps_brd_id.o \
+					   board-flash.o 
 
 obj-$(CONFIG_MACH_LATONA_SEC)           += sec_common.o \
 				           sec_mux.o \
