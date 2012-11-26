@@ -131,7 +131,9 @@ enum omap_color_component {
 	DISPC_COLOR_COMPONENT_UV		= 1 << 1,
 };
 
-#if defined(CONFIG_PRODUCT_LGE_P970) || defined(CONFIG_PRODUCT_LGE_KU5900)
+/* #if defined(CONFIG_PRODUCT_LGE_P970) || defined(CONFIG_PRODUCT_LGE_KU5900)
+Dirty Hack 2: We have disabled LGE CONFIGS */
+
 	/*LG_CHANGE_S lee.hyunji@lge.com 20110401 Gamma tuning*/
 	volatile unsigned long int GammaTable[] =	{	
 	0x00000000, 
@@ -391,7 +393,8 @@ enum omap_color_component {
 	0x00FFEFFF, 
 	0x00FFF0FF};
 	/*LG_CHANGE_E lee.hyunji@lge.com 20110401 Gamma tuning*/
-#elif defined(CONFIG_PRODUCT_LGE_LU6800)
+//@DirtyHack 2
+#if defined(CONFIG_PRODUCT_LGE_LU6800)
 volatile unsigned long int GammaTable[] = {	
 	0x00000000,
 	0x00010101,

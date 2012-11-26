@@ -45,6 +45,8 @@
 #include "dss.h"
 #include "dss_features.h"
 
+#define CONFIG_MACH_LGE_OMAP3 //Dirty hack since I have disabled LGE CONFIG FLAGS
+
 /*#define VERBOSE_IRQ*/
 #define DSI_CATCH_MISSING_TE
 

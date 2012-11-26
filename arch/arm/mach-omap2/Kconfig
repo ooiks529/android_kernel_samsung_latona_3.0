@@ -124,6 +124,18 @@ config MACH_OMAP_H4
 	select OMAP_PACKAGE_ZAF
 	select OMAP_DEBUG_DEVICES
 
+config MACH_LATONA
+	bool "Samsung Latona (GT-I9003) Board"
+	depends on ARCH_OMAP3 
+        select OMAP_PACKAGE_CBP
+        default n
+
+config MACH_LATONA_SEC
+	bool "Latona/OMAP3 porting layer"
+	depends on MACH_LATONA	
+	default n
+
+
 config MACH_OMAP_APOLLON
 	bool "OMAP 2420 Apollon board"
 	depends on SOC_OMAP2420
@@ -323,10 +335,6 @@ config MACH_LGE_HUB
 		config MACH_LGE_HUB_REV_A
 	        	bool "Revision A "
 	endchoice
-
-config MACH_LATONA
-	bool "Samsung Latona Board via LGE Hub"
-	depends on MACH_LGE_HUB
 
 config LGE_IDLE_MAX_FREQ
 	bool "Lower max freq during idle"

@@ -257,6 +257,7 @@ obj-$(CONFIG_MACH_OMAP_ZOOM3)		+= board-zoom.o \
 					   hsmmc.o \
 					   board-zoom-debugboard.o \
 					   omapxx_apps_brd_id.o
+
 ifeq ($(CONFIG_PRODUCT_LGE_LU6800),y)
 obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
 					   board-justin-peripherals.o \
@@ -268,19 +269,16 @@ obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
 					   board-justin-camera.o
 #					   board-justin-ers.o
 else
-obj-$(CONFIG_MACH_LGE_HUB)		+= board-latona.o \
-					   board-latona-peripherals.o \
-					   board-latona-display.o \
+obj-$(CONFIG_MACH_LGE_HUB)		+= #board-latona.o \
+					   #board-latona-peripherals.o \
+					   #board-latona-display.o \
 					   board-flash.o \
 					   hsmmc.o \
 					   omapxx_apps_brd_id.o
 
 endif
-# LGE_CHANGE_S, bae.cheolhwan@lge.com, 2011-03-26, Modify for AT%FBOOT & AT%SWVCHECK.
-#110111 dongjin.sim@lge.com %SWV AP [START]
-#obj-$(CONFIG_MACH_LGE_HUB)		+= lge_emmc_direct_access.o					   
-#110111 dongjin.sim@lge.com %SWV AP [END]
-# LGE_CHANGE_E, bae.cheolhwan@lge.com, 2011-03-26, Modify for AT%FBOOT & AT%SWVCHECK.
+
+
 obj-$(CONFIG_MACH_OMAP_3630SDP)		+= board-3630sdp.o \
 					   board-zoom-peripherals.o \
 					   board-zoom-display.o \
@@ -326,6 +324,22 @@ obj-$(CONFIG_MACH_CRANEBOARD)		+= board-am3517crane.o
 
 obj-$(CONFIG_MACH_SBC3530)		+= board-omap3stalker.o \
 					   hsmmc.o
+
+# SAMSUNG MACH-LATONA ##
+
+obj-$(CONFIG_MACH_LATONA)               += board-latona.o \
+					   board-latona-peripherals.o \
+					   board-latona-display.o \
+					   hsmmc.o \
+					   omapxx_apps_brid_id.o \
+					   board-flash.c 
+
+obj-$(CONFIG_MACH_LATONA_SEC)           += sec_common.o \
+				           sec_mux.o \
+					   mux_latona_rev_r08.c 
+
+########################
+
 obj-$(CONFIG_MACH_TI8168EVM)		+= board-ti8168evm.o
 # Platform specific device init code
 usbfs-$(CONFIG_ARCH_OMAP_OTG)		:= usb-fs.o
