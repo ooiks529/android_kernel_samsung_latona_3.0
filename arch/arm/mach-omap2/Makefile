@@ -259,22 +259,22 @@ obj-$(CONFIG_MACH_OMAP_ZOOM3)		+= board-zoom.o \
 					   omapxx_apps_brd_id.o
 
 ifeq ($(CONFIG_PRODUCT_LGE_LU6800),y)
-obj-$(CONFIG_MACH_LGE_HUB)		+= board-justin.o \
-					   board-justin-peripherals.o \
-					   board-justin-mmc.o \
-					   board-justin-debug.o \
-					   board-justin-panel.o \
-					   board-hub-wifi.o \
-					   omapxx_apps_brd_id.o \
-					   board-justin-camera.o
+obj-$(CONFIG_MACH_LGE_HUB)		+= #board-justin.o \
+#					   board-justin-peripherals.o \
+#					   board-justin-mmc.o \
+#					   board-justin-debug.o \
+#					   board-justin-panel.o \
+#					   board-hub-wifi.o \
+#					   omapxx_apps_brd_id.o \
+#					   board-justin-camera.o
 #					   board-justin-ers.o
 else
 obj-$(CONFIG_MACH_LGE_HUB)		+= #board-latona.o \
 					   #board-latona-peripherals.o \
 					   #board-latona-display.o \
-					   board-flash.o \
-					   hsmmc.o \
-					   omapxx_apps_brd_id.o
+#					   board-flash.o \
+#					   hsmmc.o \
+#					   omapxx_apps_brd_id.o
 
 endif
 
