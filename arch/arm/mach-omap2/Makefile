@@ -284,7 +284,7 @@ obj-$(CONFIG_MACH_OMAP_3630SDP)		+= board-3630sdp.o \
 					   board-zoom-display.o \
 					   board-flash.o \
 					   hsmmc.o \
-					   omapxx_apps_brd_id.o
+					   omapxx_apps_brd_id.o 
 obj-$(CONFIG_MACH_CM_T35)		+= board-cm-t35.o \
 					   hsmmc.o
 obj-$(CONFIG_MACH_CM_T3517)		+= board-cm-t3517.o
@@ -331,13 +331,12 @@ obj-$(CONFIG_MACH_LATONA)               += board-latona.o \
 					   board-latona-peripherals.o \
 					   board-latona-display.o \
 					   hsmmc.o \
-					   omapxx_apps_brd_id.o \
 					   board-flash.o 
 
 obj-$(CONFIG_MACH_LATONA_SEC)           += sec_common.o \
 				           sec_mux.o \
-					   mux_latona_rev_r08.c 
-
+					   mux_latona_rev_r08.o \
+					   omapxx_apps_brd_id.o
 ########################
 
 obj-$(CONFIG_MACH_TI8168EVM)		+= board-ti8168evm.o

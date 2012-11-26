@@ -93,7 +93,7 @@ clear
 clear
 
 $bold 
-$yello
+$yellow
 echo "  START    PROJECT-LINUX KERNEL 3.0 FOR GALAXY SL GT-I9003" 
 $normal
 sleep 2
