@@ -247,6 +247,8 @@
  * NOTE: Please use ioremap + __raw_read/write where possible instead of these
  */
 
+
+
 extern u8 omap_readb(u32 pa);
 extern u16 omap_readw(u32 pa);
 extern u32 omap_readl(u32 pa);
@@ -258,6 +260,9 @@ struct omap_sdrc_params;
 
 extern void omap1_map_common_io(void);
 extern void omap1_init_common_hw(void);
+
+/* Forward port this function for board-latona */ 
+void __init omap2_init_common_hw(struct omap_sdrc_params *sdrc_cs0, struct omap_sdrc_params *sdrc_cs1);
 
 #ifdef CONFIG_SOC_OMAP2420
 extern void omap242x_map_common_io(void);

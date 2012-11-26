@@ -43,10 +43,13 @@
 #include <plat/mux.h>
 #include <plat/gpio.h>
 #include <linux/interrupt.h>
-
+#include <plat/mux_latona_rev_r08.h>
 #include "mux.h"
 
 #define SEC_OMAP_OUTPUT_GPIO(name, val)		{name, val, (unsigned int)#name},
+#define OMAP3_CONTROL_PADCONF_GPIO127_OFFSET			0xa24
+#define OMAP3_CONTROL_PADCONF_GPIO128_OFFSET			0xa28
+
 
 static unsigned int __omap_board_output_gpio[][3] = {
 	SEC_OMAP_OUTPUT_GPIO(OMAP_GPIO_PS_HOLD_PU, 0)

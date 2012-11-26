@@ -27,6 +27,8 @@
 #include <plat/timer-gp.h>
 #include <plat/mux.h>
 #include <plat/display.h>
+#include <plat/mux_latona_rev_r08.h>
+#include <plat/opp.h> 
 
 #include "mux.h"
 //#include "sdram-hynix-h8mbx00u0mer-0em.h"
@@ -51,11 +53,21 @@ extern struct omap_board_mux *sec_board_wk_mux_ptr;
 
 int i = 0;
 
+#define SAMSUNG_REL_HW_REV 8
+
+
 u32 hw_revision;
 EXPORT_SYMBOL(hw_revision);
 
 struct device *sio_switch_dev;
 EXPORT_SYMBOL(sio_switch_dev);
+
+static void __init omap_sdp_init_early(void)
+{
+	printk("Starting %s \n", __func__);
+	omap2_init_common_infrastructure();
+	omap2_init_common_devices(hyb18m512160af6_sdrc_params, NULL);
+}
 
 #ifdef CONFIG_PM
 /* static struct omap_volt_vc_data vc_config = {
@@ -129,7 +141,7 @@ static void __init __sec_omap_reserve_sdram(void)
 	u32 size = 0x80000;
 	paddr = 0x95000000;
 	paddr -= size;
-
+	printk("Starting %s \n", __func__);
 	if (reserve_bootmem(paddr, size, BOOTMEM_EXCLUSIVE) < 0)
 		pr_err("FB: failed to reserve VRAM\n");
 
@@ -139,13 +151,15 @@ static void __init __sec_omap_reserve_sdram(void)
 }
 
 // TODO: Is this needed?
-/* static void __init omap_board_map_io(void)
+#if 0
+static void __init omap_board_map_io(void)
 {
 	omap2_set_globals_36xx();
 	omap34xx_map_common_io();
 
 	__sec_omap_reserve_sdram();
-} */ 
+}  
+#endif
 
 static struct omap_board_config_kernel omap_board_sec_config[] __initdata = {
 };
@@ -155,7 +169,7 @@ static struct omap_board_config_kernel omap_board_sec_config[] __initdata = {
 static int __init msecure_init(void)
 {
 	int ret = 0;
-
+	printk("Starting %s \n", __func__);
 	//printk("*****msecure_init++\n"); //TI Patch: MSECURE Pin mode change
 #ifdef CONFIG_RTC_DRV_TWL4030
 	/* 3430ES2.0 doesn't have msecure/gpio-22 line connected to T2 */
@@ -233,6 +247,7 @@ EXPORT_SYMBOL(get_hw_revision);
 static void __init get_board_hw_rev(void)
 {
 	int ret;
+	printk("Starting %s \n", __func__);
 #if 0
 	//[ changoh.heo 2010 for checing HW_REV1,Gpio 127 is special gpio.
 	u32 pbias_lte = 0, wkup_ctl = 0;
@@ -276,7 +291,7 @@ static void __init get_board_hw_rev(void)
 	gpio_free(OMAP_GPIO_HW_REV0);
 	gpio_free(OMAP_GPIO_HW_REV1);
 
-#if (CONFIG_SAMSUNG_REL_HW_REV >= 8)
+#if (SAMSUNG_REL_HW_REV >= 8)
 	ret = gpio_request(OMAP_GPIO_HW_REV2, "HW_REV2");
 	if (ret < 0) {
 		printk("fail to get gpio : %d, res : %d\n", OMAP_GPIO_HW_REV2,
@@ -312,8 +327,9 @@ static void __init get_board_hw_rev(void)
 
 static void __init get_omap_device_type(void)
 {
+	
 	u32 omap_device_type = omap_type();
-
+	printk("Starting %s \n", __func__);
 	switch (omap_device_type) {
 	case OMAP2_DEVICE_TYPE_TEST:
 		printk("   Device Type : TST_DEVICE \n");
@@ -335,16 +351,17 @@ static void __init get_omap_device_type(void)
 
 static void __init omap_board_init_irq(void)
 {
+	printk("Starting %s \n", __func__);
 	omap_board_config = omap_board_sec_config;
 	omap_board_config_size = ARRAY_SIZE(omap_board_sec_config);
 	//omap2_init_common_hw(h8mbx00u0mer0em_sdrc_params,
 			  //   h8mbx00u0mer0em_sdrc_params);
-  omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
+  	//FIXME: omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
 	omap2_gp_clockevent_set_gptimer(1);
 	omap_init_irq();
 }
 
-static const struct usbhs_omap_platform_data usbhs_pdata __initconst = {
+static const struct usbhs_omap_board_data usbhs_pdata __initconst = {
 	.port_mode[0] = OMAP_USBHS_PORT_MODE_UNUSED,
 	.port_mode[1] = OMAP_EHCI_PORT_MODE_PHY,
 	.port_mode[2] = OMAP_USBHS_PORT_MODE_UNUSED,
@@ -390,6 +407,7 @@ static struct opp_frequencies opp_freq_add_table[] __initdata = {
 
 static void __init omap_board_init(void)
 {
+	printk("Starting %s \n", __func__);
 	sec_common_init_early();
 
 	omap3_mux_init(sec_board_mux_ptr, OMAP_PACKAGE_CBP);
@@ -415,10 +433,10 @@ static void __init omap_board_init(void)
 	printk("-----------------------------------------------------------\n");
 	printk("\n");
 
-	omap_board_peripherals_init();
-	omap_board_display_init(OMAP_DSS_VENC_TYPE_COMPOSITE);
-	usb_uhhtll_init(&usbhs_pdata);
-	sr_class1p5_init();
+	//FIXME: omap_board_peripherals_init();
+	//FIXME: omap_board_display_init(OMAP_DSS_VENC_TYPE_COMPOSITE);
+	//FIXME: usb_uhhtll_init(&usbhs_pdata);
+	//FIXME: sr_class1p5_init();
 
 #ifdef CONFIG_PM
 #ifdef CONFIG_TWL4030_CORE
@@ -435,13 +453,14 @@ static void __init omap_board_fixup(struct machine_desc *desc,
 				    struct tag *tags, char **cmdline,
 				    struct meminfo *mi)
 {
+	printk("Starting %s \n", __func__);
 	mi->bank[0].start = 0x80000000;
 	mi->bank[0].size = 256 * SZ_1M;	/* DDR_CS0 256MB */
-	mi->bank[0].node = 0;
+	//No member named node: mi->bank[0].node = 0;
 
 	mi->bank[1].start = 0x90000000;
 	mi->bank[1].size = 256 * SZ_1M;	/* DDR_CS1 256MB */
-	mi->bank[1].node = 0;
+	//No member named node: mi->bank[1].node = 0;
 
 	mi->nr_banks = 2;
 }
@@ -454,7 +473,7 @@ static int __init latona_opp_init(void)
 	struct device *mdev, *ddev;
 	struct opp_frequencies *opp_freq;
 
-      printk(" ******** latona_opp_init********* \n");
+      	printk("Starting %s \n", __func__);
 	if (!cpu_is_omap3630())
 		return 0;
 
@@ -528,7 +547,7 @@ MACHINE_START(LGE_HUB, "Samsung Latona board")
 .reserve      = omap_reserve,
 .map_io       = omap3_map_io,
 .init_early   = omap_sdp_init_early,
-.init_irq     = omap_init_irq,
-.init_machine = omap_sdp_init,
+.init_irq     = omap_board_init_irq,
+.init_machine = omap_board_init,
 .timer        = &omap_timer,
 MACHINE_END
