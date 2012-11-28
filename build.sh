@@ -171,6 +171,8 @@ then
 	rm $TARBALL
 	rm $KERNEL
 	rm usr/ramdisk.cpio
+	echo "heimdall flash --normal-boot normalboot.img" > $OUT/flash
+	chmod 777 $OUT/flash
 $normal
 else
 $red
