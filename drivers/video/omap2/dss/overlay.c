@@ -40,12 +40,6 @@
 static int num_overlays;
 static struct list_head overlay_list;
 
-// goochang.jeong@lge.com 2012.06.11
-// ADD : for HDMI , GFX Display Disabled
-#ifdef CONFIG_OMAP2_DSS_HDMI
-int nDisabledGFX = 0;
-#endif
-
 static ssize_t overlay_name_show(struct omap_overlay *ovl, char *buf)
 {
 	return snprintf(buf, PAGE_SIZE, "%s\n", ovl->name);
@@ -439,28 +433,6 @@ static ssize_t overlay_y_decim_store(struct omap_overlay *ovl,
 	return r ? : size;
 }
 
-
-// goochang.jeong@lge.com 2012.06.11
-// ADD : for HDMI , GFX Display Disabled
-#ifdef CONFIG_OMAP2_DSS_HDMI
-static ssize_t overlay_disabledGFX_show(struct omap_overlay *ovl, char *buf)
-{
-    if(HDMI_DSS_DBG) printk(KERN_ERR "%s : %d\n", __func__, nDisabledGFX);
-	return snprintf(buf, PAGE_SIZE, "%d\n",
-			nDisabledGFX);
-}
-
-static ssize_t overlay_disabledGFX_store(struct omap_overlay *ovl,
-		const char *buf, size_t size)
-{
-	nDisabledGFX = simple_strtoul(buf, NULL, 10);
-    if(HDMI_DSS_DBG) printk(KERN_ERR "%s : %d\n", __func__, nDisabledGFX);
-
-	return size;
-}
-EXPORT_SYMBOL(nDisabledGFX);
-#endif
-
 struct overlay_attribute {
 	struct attribute attr;
 	ssize_t (*show)(struct omap_overlay *, char *);
@@ -494,15 +466,6 @@ static OVERLAY_ATTR(y_decim, S_IRUGO|S_IWUSR,
 static OVERLAY_ATTR(zorder, S_IRUGO|S_IWUSR,
 		overlay_zorder_show, overlay_zorder_store);
 
-// goochang.jeong@lge.com 2012.06.11
-// ADD : for HDMI , GFX Display Disabled
-#ifdef CONFIG_OMAP2_DSS_HDMI
-
-static OVERLAY_ATTR(disabledGFX, S_IRUGO|S_IWUSR,
-		overlay_disabledGFX_show,
-		overlay_disabledGFX_store);
-#endif
-
 static struct attribute *overlay_sysfs_attrs[] = {
 	&overlay_attr_name.attr,
 	&overlay_attr_manager.attr,
@@ -516,11 +479,6 @@ static struct attribute *overlay_sysfs_attrs[] = {
 	&overlay_attr_zorder.attr,
 	&overlay_attr_x_decim.attr,
 	&overlay_attr_y_decim.attr,
-    // goochang.jeong@lge.com 2012.06.11
-    // ADD : for HDMI , GFX Display Disabled
-#ifdef CONFIG_OMAP2_DSS_HDMI 
-	&overlay_attr_disabledGFX.attr,
-#endif
 	NULL
 };
 

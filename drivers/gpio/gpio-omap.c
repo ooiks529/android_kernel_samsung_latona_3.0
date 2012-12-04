@@ -56,7 +56,6 @@ struct gpio_regs {
 
 	u32 pad_set_wakeupenable;
 };
-// 20120810 sangki.hyun@lge.com glitch patch {
 #ifdef CONFIG_ARCH_OMAP3
 
 static u32 gbank_gpio_oe[OMAP34XX_NR_GPIOS];
@@ -159,8 +158,6 @@ int saved;
 static void omap3_gpio_save_pad_context(void);
 static void omap3_gpio_restore_pad_context(void);
 #endif /* CONFIG_ARCH_OMAP3 */
-// END 20120810 sangki.hyun@lge.com glitch patch }
-
 struct gpio_bank {
 	struct list_head node;
 	unsigned long pbase;
@@ -1691,7 +1688,7 @@ int omap2_gpio_prepare_for_idle(int off_mode, bool suspend)
 {
 	int ret = 0;
 	struct gpio_bank *bank;
-// START 20120810 sangki.hyun@lge.com glitch patch {
+
 #ifdef CONFIG_ARCH_OMAP3
 	saved = 0;
 	if (off_mode && suspend) {
@@ -1699,7 +1696,6 @@ int omap2_gpio_prepare_for_idle(int off_mode, bool suspend)
 		saved = 1;
 	}
 #endif
-// END 20120810 sangki.hyun@lge.com glitch patch }
 	list_for_each_entry(bank, &omap_gpio_list, node) {
 		if (!bank->mod_usage)
 			continue;
@@ -1749,7 +1745,6 @@ void omap2_gpio_resume_after_idle(int off_mode)
 
 		omap2_gpio_clear_wakeupenables(bank);
 	}
-// START 20120810 sangki.hyun@lge.com glitch patch {
 #ifdef CONFIG_ARCH_OMAP3
 	if (off_mode && saved) {
 		omap3_gpio_restore_pad_context();
@@ -1761,7 +1756,7 @@ void omap2_gpio_resume_after_idle(int off_mode)
 		saved = 0;
 	}
 #endif
-// END 20120810 sangki.hyun@lge.com glitch patch }
+
 }
 void omap_gpio_save_context(struct gpio_bank *bank)
 {
@@ -1826,7 +1821,7 @@ void omap_gpio_restore_context(struct gpio_bank *bank)
 	bank->saved_context = 0;
 }
 #endif
-// START 20120810 sangki.hyun@lge.com glitch patch {
+
 #ifdef CONFIG_ARCH_OMAP3
 /* OMAP3 GPIO glitch work around */
 static void omap3_gpio_save_pad_context(void)
@@ -1840,7 +1835,7 @@ static void omap3_gpio_save_pad_context(void)
 	u32 tmp_oe[OMAP34XX_NR_GPIOS];
 
 	list_for_each_entry(bank, &omap_gpio_list, node) {
-		omap_gpio_save_context(bank);
+
 		tmp_oe[i] = bank->context.oe;
 		gbank_gpio_oe[i] = bank->context.oe;
 		gpio_bank[i] = bank;
@@ -1869,18 +1864,6 @@ static void omap3_gpio_save_pad_context(void)
 			/* save current padconf setting */
 			pad->save = omap_ctrl_readw(offset);
 			out = bank->context.dataout;
-/* LGE_CHANGE_S [LS855:bking.moon@lge.com] 2011-09-24, */
-#if 1
-                        if( (pad->save & OMAP_MUX_MODE7) != OMAP_MUX_MODE4 ) {
-                                //printk("%s: skip skip - gpio %d, out 0x%x, before 0x%x\n", __func__, n, (out & pin), pad->save);
-                                pad->save = 0;
-                        } else {
-                                //printk("%s: gpio %d, out 0x%x, before 0x%x\n", __func__, n, (out & pin), pad->save);
-#endif
-/* LGE_CHANGE_E [LS855:bking.moon@lge.com] 2011-09-24 */
-	
-
-
 			if (out & pin) {
 				/* High: PU + input */
 				conf = OMAP34XX_PAD_IN_PU_GPIO;
@@ -1895,13 +1878,6 @@ static void omap3_gpio_save_pad_context(void)
 			tmp_oe[i] |= pin;
 			__raw_writel(tmp_oe[i],
 					bank->base + bank->regs->direction);
-/* LGE_CHANGE_S [LS855:bking.moon@lge.com] 2011-09-24, */
-#if 1
-                        }
-#endif
-/* LGE_CHANGE_E [LS855:bking.moon@lge.com] 2011-09-24 */
-
-
 		}
 		pad++;
 	}
@@ -1925,7 +1901,6 @@ static void omap3_gpio_restore_pad_context(void)
 static inline void omap3_gpio_save_pad_context(void) {};
 static inline void omap3_gpio_restore_pad_context(void) {};
 #endif /* CONFIG_ARCH_OMAP3 */
-// END 20120810 sangki.hyun@lge.com glitch patch }
 static const struct dev_pm_ops gpio_pm_ops = {
 	.runtime_suspend	= omap_gpio_pm_runtime_suspend,
 	.runtime_resume		= omap_gpio_pm_runtime_resume,
@@ -1951,7 +1926,6 @@ static int __init omap_gpio_drv_reg(void)
 	return platform_driver_register(&omap_gpio_driver);
 }
 postcore_initcall(omap_gpio_drv_reg);
-// START 20120810 sangki.hyun@lge.com glitch patch {
 #ifdef CONFIG_ARCH_OMAP3
 /*
  * Following pad init code in addition to the context / restore hooks are
@@ -2023,4 +1997,4 @@ static int __init omap3_gpio_pads_init(void)
 }
 late_initcall(omap3_gpio_pads_init);
 #endif
-// END 20120810 sangki.hyun@lge.com glitch patch }
+

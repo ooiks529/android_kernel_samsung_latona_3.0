@@ -88,9 +88,6 @@
  *
  * Most of the conditional compilation will (someday) vanish.
  */
-#define MUSB_DEBUG  	0
-#define MUSB_RESET_DEBUG 1
-#define MUSB_INT_DEBUG 0
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -403,19 +400,16 @@ static irqreturn_t musb_stage0_irq(struct musb *musb, u8 int_usb,
 {
 	irqreturn_t handled = IRQ_NONE;
 
-#if MUSB_DEBUG
-	printk(KERN_ERR "[ED_MC]A2.int_usb=0x%x, state=%d\n",int_usb,musb->xceiv->state);
-#endif //MUSB_DEBUG
-/*		dev_dbg(musb->controller, "<== Power=%02x, DevCtl=%02x, int_usb=0x%x\n", power, devctl,
+	dev_dbg(musb->controller, "<== Power=%02x, DevCtl=%02x, int_usb=0x%x\n", power, devctl,
 		int_usb);
-	*/
+
 	/* in host mode, the peripheral may issue remote wakeup.
 	 * in peripheral mode, the host may resume the link.
 	 * spurious RESUME irqs happen too, paired with SUSPEND.
 	 */
 	if (int_usb & MUSB_INTR_RESUME) {
 		handled = IRQ_HANDLED;
-	/*	dev_dbg(musb->controller, "RESUME (%s)\n", otg_state_string(musb->xceiv->state)); */
+		dev_dbg(musb->controller, "RESUME (%s)\n", otg_state_string(musb->xceiv->state));
 
 		if (devctl & MUSB_DEVCTL_HM) {
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
@@ -622,19 +616,11 @@ static irqreturn_t musb_stage0_irq(struct musb *musb, u8 int_usb,
 #endif
 		case OTG_STATE_B_IDLE:
 			if (!musb->is_active)
-			{	
-#if MUSB_RESET_DEBUG
-				printk(KERN_INFO "[ED_MC]1-1.USB_SUSPEND\n");
-#endif //MUSB_DEBUG
 				break;
-			}
 		case OTG_STATE_B_PERIPHERAL:
 			musb_g_suspend(musb);
 			musb->is_active = is_otg_enabled(musb)
 					&& musb->xceiv->gadget->b_hnp_enable;
-#if MUSB_RESET_DEBUG
-	printk(KERN_INFO "[ED_MC]1-2.<INT>USB_SUSPEND\n");
-#endif //MUSB_DEBUG
 			if (musb->is_active) {
 #ifdef	CONFIG_USB_MUSB_OTG
 				musb->xceiv->state = OTG_STATE_B_WAIT_ACON;
@@ -741,14 +727,8 @@ b_host:
 				MUSB_MODE(musb), devctl);
 		handled = IRQ_HANDLED;
 
-#if MUSB_RESET_DEBUG
-	printk(KERN_INFO "[ED_MC]2.<INT>MUSB_DISCONNECT\n");
-#endif //MUSB_DEBUG
-	
-/* Release the wakelock */
-//LGE_CHANGE [daewung.kim taeju.park] after m4 merge, bug fix
-		if (is_otg_enabled(musb) || is_host_enabled(musb))
-			wake_unlock(&musb->musb_wakelock);
+		/* Release the wakelock */
+		wake_unlock(&musb->musb_wakelock);
 		switch (musb->xceiv->state) {
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
 		case OTG_STATE_A_HOST:
@@ -817,9 +797,7 @@ b_host:
 				otg_state_string(musb->xceiv->state));
 
 			/* Hold a wakelock */
-//LGE_CHANGE [daewung.kim taeju.park] after m4 merge, bug fix
-			if (is_otg_enabled(musb) || is_host_enabled(musb))
-				wake_lock(&musb->musb_wakelock);
+			wake_lock(&musb->musb_wakelock);
 			switch (musb->xceiv->state) {
 #ifdef CONFIG_USB_OTG
 			case OTG_STATE_A_SUSPEND:
@@ -855,9 +833,6 @@ b_host:
 				/* FALLTHROUGH */
 			case OTG_STATE_B_PERIPHERAL:
 				musb_g_reset(musb);
-#if 0//MUSB_RESET_DEBUG
-	printk(KERN_INFO "[ED_MC]2.<INT>MUSB_reset\n");
-#endif //MUSB_DEBUG
 				break;
 			default:
 				dev_dbg(musb->controller, "Unhandled BUS RESET as %s\n",
@@ -928,10 +903,6 @@ void musb_start(struct musb *musb)
 	u8		temp;
 
 	dev_dbg(musb->controller, "<== devctl %02x\n", devctl);
-
-#if MUSB_INT_DEBUG
-	printk(KERN_ERR "[ED_MC]musb_start\n");
-#endif //MUSB_DEBUG
 
 	/*  Set INT enable registers, enable interrupts */
 	musb_writew(regs, MUSB_INTRTXE, musb->epmask);
@@ -1257,7 +1228,7 @@ static struct musb_fifo_cfg __initdata ep0_cfg = {
 
 static int __init ep_config_from_table(struct musb *musb)
 {
-	const struct musb_fifo_cfg	*cfg = NULL;
+	const struct musb_fifo_cfg	*cfg;
 	unsigned		i, n;
 	int			offset;
 	struct musb_hw_ep	*hw_ep = musb->endpoints;
@@ -1351,7 +1322,7 @@ done:
 static int __init ep_config_from_hw(struct musb *musb)
 {
 	u8 epnum = 0;
-	struct musb_hw_ep *hw_ep = NULL;
+	struct musb_hw_ep *hw_ep;
 	void *mbase = musb->mregs;
 	int ret = 0;
 
@@ -1402,7 +1373,7 @@ enum { MUSB_CONTROLLER_MHDRC, MUSB_CONTROLLER_HDRC, };
 static int __init musb_core_init(u16 musb_type, struct musb *musb)
 {
 	u8 reg;
-	char *type = NULL;
+	char *type;
 	char aInfo[90], aRevision[32], aDate[12];
 	void __iomem	*mbase = musb->mregs;
 	int		status = 0;
@@ -1849,11 +1820,11 @@ static struct musb *__init
 allocate_instance(struct device *dev,
 		struct musb_hdrc_config *config, void __iomem *mbase)
 {
-	struct musb		*musb = NULL;
-	struct musb_hw_ep	*ep = NULL;
+	struct musb		*musb;
+	struct musb_hw_ep	*ep;
 	int			epnum;
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
-	struct usb_hcd	*hcd = NULL;
+	struct usb_hcd	*hcd;
 
 	hcd = usb_create_hcd(&musb_hc_driver, dev, dev_name(dev));
 	if (!hcd)
@@ -1940,7 +1911,7 @@ static int __init
 musb_init_controller(struct device *dev, int nIrq, void __iomem *ctrl)
 {
 	int			status;
-	struct musb		*musb = NULL;
+	struct musb		*musb;
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
 
 	/* The driver might handle more features than the board; OK.
@@ -2166,10 +2137,8 @@ static int __init musb_probe(struct platform_device *pdev)
 	struct device	*dev = &pdev->dev;
 	int		irq = platform_get_irq_byname(pdev, "mc");
 	int		status;
-	struct resource	*iomem = NULL;
-	void __iomem	*base = NULL;
-
-
+	struct resource	*iomem;
+	void __iomem	*base;
 
 	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!iomem || irq <= 0)
@@ -2225,7 +2194,7 @@ static void musb_save_context(struct musb *musb)
 {
 	int i;
 	void __iomem *musb_base = musb->mregs;
-	void __iomem *epio = NULL;
+	void __iomem *epio;
 
 	if (is_host_enabled(musb)) {
 		musb->context.frame = musb_readw(musb_base, MUSB_FRAME);
@@ -2293,8 +2262,8 @@ static void musb_restore_context(struct musb *musb)
 {
 	int i;
 	void __iomem *musb_base = musb->mregs;
-	void __iomem *ep_target_regs = NULL;
-	void __iomem *epio = NULL;
+	void __iomem *ep_target_regs;
+	void __iomem *epio;
 
 	musb_platform_restore_context(musb);
 

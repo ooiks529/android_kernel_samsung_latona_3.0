@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//#define DEBUG //+DEJA
+
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
@@ -49,7 +49,7 @@ static int def_rotate;
 static int def_mirror;
 
 #ifdef DEBUG
-unsigned int omapfb_debug = 0 ;//~DEJA
+unsigned int omapfb_debug;
 module_param_named(debug, omapfb_debug, bool, 0644);
 static unsigned int omapfb_test_pattern;
 module_param_named(test, omapfb_test_pattern, bool, 0644);
@@ -2253,7 +2253,7 @@ static int omapfb_init_display(struct omapfb2_device *fbdev,
 	struct omap_dss_driver *dssdrv = dssdev->driver;
 	int r;
 
-	r = dssdrv->enable(dssdev); //omap_dss_driver_enable()
+	r = dssdrv->enable(dssdev);
 	if (r) {
 		dev_warn(fbdev->dev, "Failed to enable display '%s'\n",
 				dssdev->name);
@@ -2281,15 +2281,12 @@ static int omapfb_init_display(struct omapfb2_device *fbdev,
 		}
 
 		dssdrv->get_resolution(dssdev, &w, &h);
-// LGE CHANGE ICS
-#if 0
 		r = dssdrv->update(dssdev, 0, 0, w, h);
 		if (r) {
 			dev_err(fbdev->dev,
 					"Failed to update display\n");
 			return r;
 		}
-#endif
 	} else {
 		if (dssdrv->set_update_mode) {
 			r = dssdrv->set_update_mode(dssdev,

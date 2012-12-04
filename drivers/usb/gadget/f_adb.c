@@ -258,7 +258,7 @@ static int adb_create_bulk_endpoints(struct adb_dev *dev,
 	return 0;
 
 fail:
-//rintk(KERN_ERR "adb_bind() could not allocate requests\n");
+	printk(KERN_ERR "adb_bind() could not allocate requests\n");
 	return -1;
 }
 
@@ -270,9 +270,7 @@ static ssize_t adb_read(struct file *fp, char __user *buf,
 	int r = count, xfer;
 	int ret;
 
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-	//pr_debug("adb_read(%d)\n", count);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+	pr_debug("adb_read(%d)\n", count);
 	if (!_adb_dev)
 		return -ENODEV;
 
@@ -284,9 +282,7 @@ static ssize_t adb_read(struct file *fp, char __user *buf,
 
 	/* we will block until we're online */
 	while (!(dev->online || dev->error)) {
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-		//pr_debug("adb_read: waiting for online state\n");
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+		pr_debug("adb_read: waiting for online state\n");
 		ret = wait_event_interruptible(dev->read_wq,
 				(dev->online || dev->error));
 		if (ret < 0) {
@@ -306,16 +302,12 @@ requeue_req:
 	dev->rx_done = 0;
 	ret = usb_ep_queue(dev->ep_out, req, GFP_ATOMIC);
 	if (ret < 0) {
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-		//pr_debug("adb_read: failed to queue req %p (%d)\n", req, ret);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+		pr_debug("adb_read: failed to queue req %p (%d)\n", req, ret);
 		r = -EIO;
 		dev->error = 1;
 		goto done;
 	} else {
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-		//pr_debug("rx %p queue\n", req);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+		pr_debug("rx %p queue\n", req);
 	}
 
 	/* wait for a request to complete */
@@ -331,9 +323,7 @@ requeue_req:
 		if (req->actual == 0)
 			goto requeue_req;
 
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-		//pr_debug("rx %p %d\n", req, req->actual);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+		pr_debug("rx %p %d\n", req, req->actual);
 		xfer = (req->actual < count) ? req->actual : count;
 		if (copy_to_user(buf, req->buf, xfer))
 			r = -EFAULT;
@@ -343,9 +333,7 @@ requeue_req:
 
 done:
 	adb_unlock(&dev->read_excl);
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-	//pr_debug("adb_read returning %d\n", r);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+	pr_debug("adb_read returning %d\n", r);
 	return r;
 }
 
@@ -359,16 +347,14 @@ static ssize_t adb_write(struct file *fp, const char __user *buf,
 
 	if (!_adb_dev)
 		return -ENODEV;
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-	//pr_debug("adb_write(%d)\n", count);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+	pr_debug("adb_write(%d)\n", count);
 
 	if (adb_lock(&dev->write_excl))
 		return -EBUSY;
 
 	while (count > 0) {
 		if (dev->error) {
-//	pr_debug("adb_write dev->error\n");
+			pr_debug("adb_write dev->error\n");
 			r = -EIO;
 			break;
 		}
@@ -396,7 +382,7 @@ static ssize_t adb_write(struct file *fp, const char __user *buf,
 			req->length = xfer;
 			ret = usb_ep_queue(dev->ep_in, req, GFP_ATOMIC);
 			if (ret < 0) {
-//		pr_debug("adb_write: xfer error %d\n", ret);
+				pr_debug("adb_write: xfer error %d\n", ret);
 				dev->error = 1;
 				r = -EIO;
 				break;
@@ -414,15 +400,13 @@ static ssize_t adb_write(struct file *fp, const char __user *buf,
 		adb_req_put(dev, &dev->tx_idle, req);
 
 	adb_unlock(&dev->write_excl);
-/* LGE_CHANGE_S [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
-	//pr_debug("adb_write returning %d\n", r);
-/* LGE_CHANGE_E [yangwook.lim@lge.com] 2012-04-16 : blocked kernel log */
+	pr_debug("adb_write returning %d\n", r);
 	return r;
 }
 
 static int adb_open(struct inode *ip, struct file *fp)
 {
-//rintk(KERN_INFO "adb_open\n");
+	printk(KERN_INFO "adb_open\n");
 	if (!_adb_dev)
 		return -ENODEV;
 
@@ -439,7 +423,7 @@ static int adb_open(struct inode *ip, struct file *fp)
 
 static int adb_release(struct inode *ip, struct file *fp)
 {
-//rintk(KERN_INFO "adb_release\n");
+	printk(KERN_INFO "adb_release\n");
 	adb_unlock(&_adb_dev->open_excl);
 	return 0;
 }
@@ -566,7 +550,7 @@ static int adb_bind_config(struct usb_configuration *c)
 {
 	struct adb_dev *dev = _adb_dev;
 
-//rintk(KERN_INFO "adb_bind_config\n");
+	printk(KERN_INFO "adb_bind_config\n");
 
 	dev->cdev = c->cdev;
 	dev->function.name = "adb";
@@ -610,7 +594,7 @@ static int adb_setup(void)
 
 err:
 	kfree(dev);
-//rintk(KERN_ERR "adb gadget driver failed to initialize\n");
+	printk(KERN_ERR "adb gadget driver failed to initialize\n");
 	return ret;
 }
 
