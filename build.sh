@@ -37,13 +37,13 @@ $normal
 
 # SET SOME PATH VARIABLES
 # Modify these as per requirements
-ROOT="/home/dhiru1602/AndroidProject/CM10/out/host/linux-x86/bin/"
+ROOT="/home/aditya/i9003"
 # Toolchain path
-TOOLCHAIN="/home/dhiru1602/AndroidProject/CM10/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi"
-KERNEL_DIR="/home/dhiru1602/AndroidProject/CM10/kernel/samsung/latona_3"
+TOOLCHAIN="/home/aditya/Toolchain/arm-eabi-4.4.3/bin/arm-eabi"
+KERNEL_DIR="$ROOT/Kernel-3-latona"
 RAMDISK_DIR="$KERNEL_DIR/usr/ramdisk"
 MODULES_DIR="$RAMDISK_DIR/lib/modules"
-OUT="/home/dhiru1602/i9003/out"
+OUT="$ROOT/out"
 # Device Specific flags
 
 # Defconfigs
@@ -171,6 +171,8 @@ then
 	rm $TARBALL
 	rm $KERNEL
 	rm usr/ramdisk.cpio
+	echo "heimdall flash --normal-boot normalboot.img" > $OUT/flash
+	chmod 777 $OUT/flash
 $normal
 else
 $red
