@@ -428,7 +428,11 @@ void __init omap2_init_common_devices(struct omap_sdrc_params *sdrc_cs0,
 {
 	if (cpu_is_omap24xx() || omap3_has_sdrc()) {
 		omap2_sdrc_init(sdrc_cs0, sdrc_cs1);
+#ifdef CONFIG_MACH_OMAP_LATONA
+		printk(KERN_DEBUG "%s: Skipping reprogram_sdrc since dpll3 clock is not found on latona\n",__func__);
+#else
 		_omap2_init_reprogram_sdrc();
+#endif
 	}
 
 	omap_irq_base_init();
