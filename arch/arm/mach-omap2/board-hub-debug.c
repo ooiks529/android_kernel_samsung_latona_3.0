@@ -132,7 +132,7 @@ static int lge_hub_panic_event(struct notifier_block *this,
 
 #endif /* CONFIG_FRAMEBUFFER_CONSOLE */
 
-		reset_mode = 'f';
+		reset_mode = 'p';
 	}
 
 	emergency_restart();
