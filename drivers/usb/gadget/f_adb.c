@@ -27,6 +27,8 @@
 #include <linux/device.h>
 #include <linux/miscdevice.h>
 
+#include <linux/usb/android_composite.h>
+
 #define ADB_BULK_BUFFER_SIZE           4096
 
 /* number of tx requests to allocate */

@@ -297,6 +297,12 @@
 
 #include "gadget_chips.h"
 
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+#include <linux/usb/android_composite.h>
+#include <linux/platform_device.h>
+
+#define FUNCTION_NAME		"usb_mass_storage"
+#endif
 
 /*------------------------------------------------------------------------*/
 
@@ -407,6 +413,8 @@ struct fsg_common {
 	char inquiry_string[8 + 16 + 4 + 1];
 
 	struct kref		ref;
+
+
 };
 
 struct fsg_config {
@@ -432,6 +440,10 @@ struct fsg_config {
 	u16 release;
 
 	char			can_stall;
+#ifdef CONFIG_USB_ANDROID_MASS_STORAGE
+	struct platform_device *pdev;
+#endif
+
 };
 
 struct fsg_dev {

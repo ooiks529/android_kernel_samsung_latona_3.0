@@ -109,6 +109,9 @@ struct usb_function {
 
 	struct usb_configuration	*config;
 
+	/* disabled is zero if the function is enabled */
+	int				disabled;
+
 	/* REVISIT:  bind() functions can be marked __init, which
 	 * makes trouble for section mismatch analysis.  See if
 	 * we can't restructure things to avoid mismatching.
@@ -136,6 +139,7 @@ struct usb_function {
 	/* internals */
 	struct list_head		list;
 	DECLARE_BITMAP(endpoints, 32);
+	struct device			*dev;
 };
 
 int usb_add_function(struct usb_configuration *, struct usb_function *);
@@ -361,6 +365,14 @@ struct usb_composite_dev {
 
 	/* protects deactivations and delayed_status counts*/
 	spinlock_t			lock;
+/* used by usb_composite_force_reset to avoid signalling switch changes */
+	bool				mute_switch;
+	struct work_struct switch_work;
+#ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
+/* soonyong.cho : Below values are used for samsung composite framework. */
+	unsigned int			product_num; 	/* product number (ex : 0, 1, 2, ..) */
+	struct android_usb_product 	*products;	/* products list */
+#endif
 };
 
 extern int usb_string_id(struct usb_composite_dev *c);
